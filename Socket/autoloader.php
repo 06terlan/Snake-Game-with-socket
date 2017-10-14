@@ -1,8 +1,8 @@
 <?php
 
 $mapping = [
-    //'GuzzleHttp\Stream\AppendStream' => __DIR__ . '/GuzzleHttp/Stream/AppendStream.php',
-    //'GuzzleHttp\Stream\CachingStream' => __DIR__ . '/GuzzleHttp/Stream/CachingStream.php'
+    'WebSocket\Server' => __DIR__ . '/Server.php',
+    'WebSocket\BaseServer' => __DIR__ . '/BaseServer.php'
 ];
 
 spl_autoload_register(function ($class) use ($mapping) {
