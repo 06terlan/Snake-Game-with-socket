@@ -38,7 +38,7 @@ abstract class BaseServer
 	 * The array of connected clients
 	 * @var Array of clients
 	 */
-	private $clients;
+	public $clients;
 
 	/**
 	 * If true, the server will print messages to the terminal
@@ -318,7 +318,7 @@ abstract class BaseServer
 	 * @param $text the text to display
 	 * @param $exit if true, the process will exit
 	 */
-	private function consoleWrite($text , $exit = false) 
+	public function consoleWrite($text , $exit = false) 
 	{
 		$text = date('(Y-m-d H:i:s) - ').$text;
 		if($exit) {

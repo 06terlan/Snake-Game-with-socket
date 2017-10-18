@@ -10,9 +10,30 @@ namespace WebSocket;
 
 class Server extends BaseServer
 {
+  private $game;
+
+  function __construct( $address , $port , $cprint , \Game\Game $game )
+  {
+    parent::__construct( $address , $port , $cprint );
+
+    $this->game = $game;
+    $this->game->clients = &$this->clients;
+    $this->game->play();
+  }
+
   protected function process ($client, $message)
   {
-     // Do nothing: This runs after if any data comes from client
+    $this->consoleWrite($message);
+    $action = json_decode( $message , true );
+
+    $this->game->action($client, $action);
+  }
+
+  public function shutDownServer()
+  {
+    parent::shutDownServer();
+    
+    $this->game->stop();
   }
 
   protected function connecting($client)

@@ -13,12 +13,14 @@ class Client {
 	private $socket;
 	private $handshake;
 	private $pid;
+	public 	$snake;
 
 	public function __construct($id, $socket) {
 		$this->id = $id;
 		$this->socket = $socket;
 		$this->handshake = false;
 		$this->pid = null;
+		$this->snake = new \Game\Snake();
 	}
 
 	public function getId() {
