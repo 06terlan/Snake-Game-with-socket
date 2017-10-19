@@ -17,8 +17,7 @@ class Server extends BaseServer
     parent::__construct( $address , $port , $cprint );
 
     $this->game = $game;
-    $this->game->clients = &$this->clients;
-    $this->game->play();
+    $this->game->start();
   }
 
   protected function process ($client, $message)
@@ -26,13 +25,11 @@ class Server extends BaseServer
     $this->consoleWrite($message);
     $action = json_decode( $message , true );
 
-    $this->game->action($client, $action);
+    $this->game->action( $client, $action , $this->clients );
   }
 
-  public function shutDownServer()
+  protected function onShutDownServer()
   {
-    parent::shutDownServer();
-    
     $this->game->stop();
   }
 

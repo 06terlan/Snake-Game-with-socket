@@ -88,6 +88,7 @@ abstract class BaseServer
   	abstract protected function connected($client);        // Called after the handshake response is sent to the client.
   	abstract protected function closed($client);           // Called after the connection is closed.
   	abstract protected function connecting($client);       // Called after the client instance had been created
+  	protected function onShutDownServer() {  }				   // Called after the server had been shuted down
 	/******************** Some usefull events *************************/
 
 	/**
@@ -311,6 +312,7 @@ abstract class BaseServer
 	{
 		socket_close($this->master);
 		$this->consoleWrite("Server shutted down",false,"red");
+		$this->onShutDownServer();
 	}
 
 	/**

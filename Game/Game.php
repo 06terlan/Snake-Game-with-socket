@@ -4,37 +4,46 @@ namespace Game;
 /**
 * Game
 */
-class Game
+class Game extends \Thread
 {
 	private $fps;
-	public $clients;
-	private $pid;
+	//public $clients;
+	private $lastTime;
+	private $shutDown;
 	
 	function __construct( $fps = 300 )
 	{
 		$this->fps = $fps;
-		$this->pid = 0;
+		$this->shutDown = false;
+		$this->lastTime = $this->get_ms();
 	}
 
-	public function action( $client , $action )
+	public function get_ms()
+	{
+		return (int)(microtime(true) * 1000 );
+	}
+
+	public function action( $client , $action , $clients )
 	{
 		if( $action['action'] == 'pressKey' ) $this->pressKey( $client , $action['key'] );
-		var_dump($this->clients);
 	}
 
-	public function play()
+	public function run()
 	{
-		$this->pid = \pcntl_fork(); var_dump("pid",$this->pid);
-		while ( true )
+		$this->shutDown = false;
+
+		while (!$this->shutDown)
 		{
-			usleep(1000 * $this->fps);
-			var_dump("expression");
+			var_dump("move",$this->get_ms() , $this->lastTime , $this->get_ms() - $this->lastTime);
+			$this->lastTime = $this->get_ms();
+
+			usleep( 1000 * $this->fps );
 		}
 	}
 
 	public function stop()
 	{
-		if( $this->pid > 0 ) posix_kill($this->pid, 0);
+		$this->shutDown = true;
 	}
 
 	/*********** ACTIONS ***************/
