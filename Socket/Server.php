@@ -17,6 +17,7 @@ class Server extends BaseServer
     parent::__construct( $address , $port , $cprint );
 
     $this->game = $game;
+    $this->game->server = $this;
     $this->game->start();
   }
 
@@ -40,10 +41,10 @@ class Server extends BaseServer
   
   protected function connected ($client)
   {
-    // Do nothing: This is just an echo server, there's no need to track the user.
-    // However, if we did care about the users, we would probably have a cookie to
-    // parse at this step, would be looking them up in permanent storage, etc.
+    $client->snake = new \Game\Snake( $this->game->getSnakeSize() );
+
     $this->send($client,"Hi new client");
+    var_dump($this->clients);
   }
   
   protected function closed ($client)

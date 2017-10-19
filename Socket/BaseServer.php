@@ -57,6 +57,7 @@ abstract class BaseServer
 		$this->address = $address;
 		$this->port = $port;
 		$this->cprint = $cprint;
+		$this->clients = [];
 		$this->consoleWrite("Server starting...");
 
 		/**

@@ -228,11 +228,12 @@ Sockets.Creator = function(url)
   Sockets.WS = new WebSocket(url);
   Sockets.WS.onopen = function(msg)
   {
-    alert('onopen');
+    alert('Are you ready?');
+    Sockets.WS.send( JSON.stringify( { action : 'newGame' } ) );
   };
   Sockets.WS.onmessage = function(msg)
   {
-    alert(msg.data);
+    console.log(msg.data);
   };
   Sockets.WS.onclose = function(msg)
   {

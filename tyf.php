@@ -16,7 +16,7 @@ set_time_limit(0);
 
 
 //game
-$fps = 300;
+$fps = 500;
 $snakeSize = 5;
 
 $game = new \Game\Game( $fps , $snakeSize );
@@ -25,8 +25,8 @@ $address = '127.0.0.1';
 $port = 5555;
 $verboseMode = true;
 
-$server = new \WebSocket\Server( $address , $port , $verboseMode , $game );
-$server->run();
-$server->shutDownServer();
+$SERVER = new \WebSocket\Server( $address , $port , $verboseMode , $game );
+$SERVER->run();
+$SERVER->shutDownServer();
 
 ?>

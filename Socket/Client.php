@@ -20,7 +20,6 @@ class Client {
 		$this->socket = $socket;
 		$this->handshake = false;
 		$this->pid = null;
-		$this->snake = new \Game\Snake();
 	}
 
 	public function getId() {

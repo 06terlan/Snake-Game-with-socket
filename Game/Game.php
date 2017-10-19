@@ -7,35 +7,38 @@ namespace Game;
 class Game extends \Thread
 {
 	private $fps;
-	//public $clients;
-	private $lastTime;
 	private $shutDown;
+	private $snakeSize;
+	public $server;
 	
-	function __construct( $fps = 300 )
+	function __construct( $fps = 300 , $snakeSize = 5 )
 	{
 		$this->fps = $fps;
 		$this->shutDown = false;
-		$this->lastTime = $this->get_ms();
-	}
-
-	public function get_ms()
-	{
-		return (int)(microtime(true) * 1000 );
+		$this->snakeSize = $snakeSize;
 	}
 
 	public function action( $client , $action , $clients )
 	{
-		if( $action['action'] == 'pressKey' ) $this->pressKey( $client , $action['key'] );
+		if( $action['action'] == 'pressKey' ) $client->snake->setPressedKey( $action['key'] );
+		else if( $action['action'] == 'newGame' ) $client->snake->newGame();
 	}
 
 	public function run()
 	{
+		//global $SERVER; var_dump($SERVER);
 		$this->shutDown = false;
 
-		while (!$this->shutDown)
+		while ( !$this->shutDown )
 		{
-			var_dump("move",$this->get_ms() , $this->lastTime , $this->get_ms() - $this->lastTime);
-			$this->lastTime = $this->get_ms();
+			var_dump($this->server->clients); print "<br/>";
+			/*foreach ($this->server->clients as $client)
+			{
+				if( $client->snake->isPlaying )
+				{
+					var_dump( $client->snake->length );
+				}
+			}*/
 
 			usleep( 1000 * $this->fps );
 		}
@@ -46,9 +49,13 @@ class Game extends \Thread
 		$this->shutDown = true;
 	}
 
+	/*********** Getter & setter ***************/
+
+	public function getSnakeSize(){ return $this->snakeSize; }
+
 	/*********** ACTIONS ***************/
-	private function pressKey( $client , $key )
+	/*protected function pressKey( $client , $key )
 	{
 		$client->snake->setPressedKey( $key );
-	}
+	}*/
 }
