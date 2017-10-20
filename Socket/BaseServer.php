@@ -95,7 +95,7 @@ abstract class BaseServer
 	/**
 	 * Run the server
 	 */
-	public function run() 
+	public function run()
 	{
 		$i = 0;
 		$this->consoleWrite("Start running...");
@@ -123,7 +123,12 @@ abstract class BaseServer
 						$data = null;
 
 						$bytes = socket_recv($socket, $r_data, 2048, 0);	$data .= $r_data;
-						if(!$client->getHandshake())
+						
+						if(strpos($data, 'MyOwnServerRequest') !== false)
+						{
+							$this->process($client,$data);
+						}
+						else if(!$client->getHandshake())
 						{
 							$this->consoleWrite("Doing the handshake");
 							if(!$this->handshake($client, $data))

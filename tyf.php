@@ -14,16 +14,20 @@ require_once __DIR__ . '/Socket/autoloader.php'; // Autoload files using Compose
 
 set_time_limit(0);
 
-
-//game
-$fps = 500;
-$snakeSize = 5;
-
-$game = new \Game\Game( $fps , $snakeSize );
 // variables
 $address = '127.0.0.1';
 $port = 5555;
 $verboseMode = true;
+
+//game
+$fps = 300;
+$snakeSize = 5;
+$height = 600;
+$width = 800;
+$cw = 10;
+
+$game = new \Game\Game( $fps , $snakeSize , $height , $width , $cw , $address , $port );
+
 
 $SERVER = new \WebSocket\Server( $address , $port , $verboseMode , $game );
 $SERVER->run();

@@ -4,41 +4,46 @@ namespace Game;
 /**
 * Game
 */
+
 class Game extends \Thread
 {
 	private $fps;
 	private $shutDown;
 	private $snakeSize;
-	public $server;
+	public  $server;
+	private $width;
+	private $height;
+	private $cw;
+
+	private $address;
+	private $port;
+
+	private $foodX;
+	private $foodY;
 	
-	function __construct( $fps = 300 , $snakeSize = 5 )
+	function __construct( $fps = 300 , $snakeSize = 5 , $height = 400 , $width = 520 , $cw = 10 , $address = '127.0.0.1' , $port = 5555 )
 	{
 		$this->fps = $fps;
 		$this->shutDown = false;
 		$this->snakeSize = $snakeSize;
-	}
+		$this->height = $height;
+		$this->width = $width;
+		$this->cw = $cw;
 
-	public function action( $client , $action , $clients )
-	{
-		if( $action['action'] == 'pressKey' ) $client->snake->setPressedKey( $action['key'] );
-		else if( $action['action'] == 'newGame' ) $client->snake->newGame();
+		$this->address = $address;
+		$this->port = $port;
 	}
 
 	public function run()
 	{
-		//global $SERVER; var_dump($SERVER);
 		$this->shutDown = false;
+		$socket = $this->createSocketConnection();
 
-		while ( !$this->shutDown )
+        while ( !$this->shutDown )
 		{
-			var_dump($this->server->clients); print "<br/>";
-			/*foreach ($this->server->clients as $client)
-			{
-				if( $client->snake->isPlaying )
-				{
-					var_dump( $client->snake->length );
-				}
-			}*/
+			
+			$data = json_encode([ 'action' => 'nextMove' , 'MyOwnServerRequest' => 1 ] , true);
+			socket_write($socket, $data, strlen($data));
 
 			usleep( 1000 * $this->fps );
 		}
@@ -54,8 +59,73 @@ class Game extends \Thread
 	public function getSnakeSize(){ return $this->snakeSize; }
 
 	/*********** ACTIONS ***************/
-	/*protected function pressKey( $client , $key )
+	protected function createSocketConnection( )
 	{
-		$client->snake->setPressedKey( $key );
-	}*/
+		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		if ($socket === false)
+		{
+		    echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+		}
+		else
+		{
+		    echo "Game socket_create OK.\n";
+		}
+		$result = socket_connect($socket, '127.0.0.1' , 5555 );
+		if ($result === false)
+		{
+		    echo "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+		}
+		else
+		{
+		    echo "Game socket_connect OK.\n";
+		}
+
+		return $socket;
+	}
+
+	public function nextMove( &$snake )
+	{
+		$length = $snake->getLength();
+
+		$nx = $length[0]['x'];
+		$ny = $length[0]['y'];
+
+		switch ($snake->getPressedKey())
+		{
+	      case 'right':
+	        $nx++;
+	        break;
+	      case 'left':
+	        $nx--;
+	        break;
+	      case 'up':
+	        $ny--;
+	        break;
+	      case 'down':
+	        $ny++;
+	        break;
+	    }
+
+	    if( $this->collision( $nx , $ny ) )
+	    {
+	    	$snake->isPlaying = false;
+	    	return [ 'isPlaying' => false ];
+	    }
+
+	    array_pop($length);
+	    array_unshift($length, [ 'x' => $nx , 'y' => $ny ]);
+
+	    $snake->setLength($length);
+
+	    return [ 'length' => $length , 'isPlaying' => true ];
+	}
+
+	public function collision($nx, $ny)
+	{
+	    if ($nx == -1 || $nx == ($this->width / $this->cw) || $ny == -1 || $ny == ($this->height / $this->cw))
+	    {
+	      return true;
+	    }
+	    return false;    
+	}
 }

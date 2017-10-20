@@ -15,10 +15,7 @@ class Server extends BaseServer
   function __construct( $address , $port , $cprint , \Game\Game $game )
   {
     parent::__construct( $address , $port , $cprint );
-
     $this->game = $game;
-    $this->game->server = $this;
-    $this->game->start();
   }
 
   protected function process ($client, $message)
@@ -26,7 +23,62 @@ class Server extends BaseServer
     $this->consoleWrite($message);
     $action = json_decode( $message , true );
 
-    $this->game->action( $client, $action , $this->clients );
+    //$this->game->action( $client, $action , $this->clients );
+    if( $action['action'] == 'pressKey' ) $client->snake->setPressedKey( $action['key'] );
+    else if( $action['action'] == 'newGame' ) $client->snake->newGame();
+    else if( $action['action'] == 'nextMove' )
+    {
+      $clientsSendTo = [];
+      $datas         = [];
+      $cordinates    = [];
+      foreach ($this->clients as $client)
+      {
+        if( $client->snake !== null && $client->snake->isPlaying )
+        {
+          $i = 0;
+          $tiles = $this->game->nextMove( $client->snake );
+          $datas[$client->getId()] = $tiles;
+
+          if( $tiles['isPlaying'] )
+          {
+            foreach ($tiles['length'] as $tile)
+            {
+              if( isset($cordinates[$tile['x'].$tile['y']]) )
+              {
+                if( $i == 0 )
+                {
+                  $datas[$client->getId()] = [ 'isPlaying' => false ];
+                  $client->snake->isPlaying = false;
+                }
+                if( $cordinates[$tile['x'].$tile['y']]['count'] == 0 )
+                {
+                  $datas[$cordinates[$tile['x'].$tile['y']]['id']] = [ 'isPlaying' => false ];
+                  $this->clients[$cordinates[$tile['x'].$tile['y']]['id']]->snake->isPlaying = false;
+                }
+              }
+              else $cordinates[$tile['x'].$tile['y']] = [ 'id' => $client->getId() , 'count' => $i++ ];
+            }
+          }
+
+          $clientsSendTo[] = $client;
+        }
+      }
+      //sending
+      $dataStr = json_encode([ 'action' => 'move' , 'data' => $datas ]);
+      foreach ($clientsSendTo as $client)
+      {
+        $this->send($client , $dataStr);
+      }
+
+    }
+
+  }
+
+  public function run()
+  {
+    $this->game->start();
+
+    parent::run();
   }
 
   protected function onShutDownServer()
@@ -41,10 +93,9 @@ class Server extends BaseServer
   
   protected function connected ($client)
   {
-    $client->snake = new \Game\Snake( $this->game->getSnakeSize() );
+    $client->snake = new \Game\Snake( $this->game->getSnakeSize() , $client->getId() );
 
-    $this->send($client,"Hi new client");
-    var_dump($this->clients);
+    $this->send( $client , json_encode([ 'action' => 'myId' , 'myId' => $client->getId() ]) );
   }
   
   protected function closed ($client)

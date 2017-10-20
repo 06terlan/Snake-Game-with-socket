@@ -4,7 +4,7 @@
 var Game      = Game      || {};
 var Keyboard  = Keyboard  || {};
 var Sockets   = Sockets   || {};
-//var Component = Component || {};
+var Component = Component || {};
 
 /**
  * Keyboard Map
@@ -31,7 +31,7 @@ Keyboard.ControllerEvents = function() {
   
   // Keydown Event
   document.onkeydown = function(event) {
-    self.pressKey = event.which; console.log();
+    self.pressKey = event.which;
     self.key      = self.getKey();
 
     if( typeof(self.getKey()) != 'undefined' ) 
@@ -47,10 +47,8 @@ Keyboard.ControllerEvents = function() {
 /**
  * Game Component Stage
  */
-/*Component.Stage = function(canvas, conf) {  
-  
-  // Sets
-  this.keyEvent  = new Keyboard.ControllerEvents();
+Component.Stage = function(canvas) {
+
   this.width     = canvas.width;
   this.height    = canvas.height;
   this.length    = [];
@@ -61,104 +59,39 @@ Keyboard.ControllerEvents = function() {
     cw   : 10,
     size : 5,
     fps  : 1000
-  };
-  
-  // Merge Conf
-  if (typeof conf == 'object') {
-    for (var key in conf) {
-      if (conf.hasOwnProperty(key)) {
-        this.conf[key] = conf[key];
-      }
-    }
   }
   
-};*/
-
-/**
- * Game Component Snake
- */
-/*Component.Snake = function(canvas, conf) {
-  
-  // Game Stage
-  //this.stage = new Component.Stage(canvas, conf);
-  
-  // Init Snake
-  this.initSnake = function() {
-    
-    // Itaration in Snake Conf Size
-    for (var i = 0; i < this.stage.conf.size; i++) {
-      
-      // Add Snake Cells
-      this.stage.length.push({x: i, y:0});
-		}
-	};
-  
-  // Call init Snake
-  this.initSnake();
-  
-  // Init Food  
-  this.initFood = function() {
-		
-    // Add food on stage
-    this.stage.food = {
-			x: Math.round(Math.random() * (this.stage.width - this.stage.conf.cw) / this.stage.conf.cw), 
-			y: Math.round(Math.random() * (this.stage.height - this.stage.conf.cw) / this.stage.conf.cw), 
-		};
-	};
-  
-  // Init Food
-  this.initFood();
-  
-  // Restart Stage
-  this.restart = function() {
-    this.stage.length            = [];
-    this.stage.food              = {};
-    this.stage.score             = 0;
-    this.stage.direction         = 'right';
-    this.stage.keyEvent.pressKey = null;
-    this.initSnake();
-    this.initFood();
-  };
-};*/
+};
 
 /**
  * Game Draw
  */
-Game.Draw = function(context, snake) {
+Game.Draw = function(context,canvas) {
   
+  this.Com = new Component.Stage(canvas);
+
   // Draw Stage
-  this.drawStage = function() {
-    
-    // Check Keypress And Set Stage direction
-    /*var keyPress = snake.stage.keyEvent.getKey(); 
-    if (typeof(keyPress) != 'undefined') {
-      snake.stage.direction = keyPress;
-    }*/
+  this.drawStage = function(data) {
     
     // Draw White Stage
-		context.fillStyle = "white";
-		context.fillRect(0, 0, snake.stage.width, snake.stage.height);
-		
-    // Snake Position
-    //var nx = snake.stage.length[0].x;
-		//var ny = snake.stage.length[0].y;
-		
-    // Add position by stage direction
-    /*switch (snake.stage.direction) {
-      case 'right':
-        nx++;
-        break;
-      case 'left':
-        nx--;
-        break;
-      case 'up':
-        ny--;
-        break;
-      case 'down':
-        ny++;
-        break;
-    }*/
+		context.fillStyle = "white"; console.log(this.Com,this.Com.width,this.Com.height);
+		context.fillRect(0, 0, this.Com.width, this.Com.height);
     
+    for(var n in data)
+    {
+      if(data[n]['isPlaying'] == true)
+      {
+        for(var nn in data[n]['length'])
+        {
+          this.drawCell(data[n]['length'][nn]['x'],data[n]['length'][nn]['y'], (n==window.myId?'rgb(220, 73, 73)':'rgb(170, 170, 170)') );
+        }
+      }
+      else if( n == window.myId )
+      {
+        alert('Game over');
+      }
+    }
+
     // Check Collision
     /*if (this.collision(nx, ny) == true)
     {
@@ -179,35 +112,28 @@ Game.Draw = function(context, snake) {
     snake.stage.length.unshift(tail);*/
     
     // Draw Snake
-    for (var i = 0; i < snake.stage.length.length; i++)
+    /*for (var i = 0; i < snake.stage.length.length; i++)
     {
       var cell = snake.stage.length[i];
       this.drawCell(cell.x, cell.y);
-    }
+    }*/
     
     // Draw Food
-    this.drawCell(snake.stage.food.x, snake.stage.food.y);
+    //this.drawCell(snake.stage.food.x, snake.stage.food.y);
     
     // Draw Score
-    context.fillText('Score: ' + snake.stage.score, 5, (snake.stage.height - 5));
+    //context.fillText('Score: ' + snake.stage.score, 5, (snake.stage.height - 5));
   };
-  
+
   // Draw Cell
-  this.drawCell = function(x, y)
+  this.drawCell = function(x, y , color)
   {
-    context.fillStyle = 'rgb(170, 170, 170)';
+    context.fillStyle = color;
     context.beginPath();
-    context.arc((x * snake.stage.conf.cw + 6), (y * snake.stage.conf.cw + 6), 4, 0, 2*Math.PI, false);    
+    context.arc((x * this.Com.conf.cw + 6), (y * this.Com.conf.cw + 6), 4, 0, 2*Math.PI, false);    
     context.fill();
   };
-  
-  // Check Collision with walls
-  /*this.collision = function(nx, ny) {  
-    if (nx == -1 || nx == (snake.stage.width / snake.stage.conf.cw) || ny == -1 || ny == (snake.stage.height / snake.stage.conf.cw)) {
-      return true;
-    }
-    return false;    
-	}*/
+
 };
 
 
@@ -217,10 +143,9 @@ Game.Draw = function(context, snake) {
 Game.Snake = function(elementId, conf)
 {
   // Sets
-  var canvas   = document.getElementById(elementId);
-  var context  = canvas.getContext("2d");
-  var events   = new Keyboard.ControllerEvents();
-  //var gameDraw = new Game.Draw(context, snake);
+  this.canvas   = document.getElementById(elementId);
+  this.context  = this.canvas.getContext("2d");
+  this.events   = new Keyboard.ControllerEvents();
 };
 
 Sockets.Creator = function(url)
@@ -233,7 +158,10 @@ Sockets.Creator = function(url)
   };
   Sockets.WS.onmessage = function(msg)
   {
-    console.log(msg.data);
+    var dataT = JSON.parse(msg.data);
+
+    if( dataT['action'] == 'move' ) window.draw.drawStage(dataT['data']);
+    else if( dataT['action'] == 'myId' ) window.myId = dataT['myId'];
   };
   Sockets.WS.onclose = function(msg)
   {
@@ -245,12 +173,12 @@ Sockets.Creator = function(url)
   };
 }
 
-
 /**
  * Window Load
  */
 window.onload = function()
 {
   var snake = new Game.Snake('stage');
+  window.draw  = new Game.Draw(snake.context,snake.canvas);
   var socket = new Sockets.Creator(Sockets.Url);
 };

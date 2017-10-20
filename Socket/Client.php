@@ -20,6 +20,7 @@ class Client {
 		$this->socket = $socket;
 		$this->handshake = false;
 		$this->pid = null;
+		$this->snake = null;
 	}
 
 	public function getId() {
