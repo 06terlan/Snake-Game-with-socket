@@ -20,7 +20,7 @@ $port = 5555;
 $verboseMode = true;
 
 //game
-$fps = 300;
+$fps = 200;
 $snakeSize = 5;
 $height = 600;
 $width = 800;

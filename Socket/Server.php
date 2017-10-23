@@ -63,6 +63,8 @@ class Server extends BaseServer
           $clientsSendTo[] = $client;
         }
       }
+      //food
+      $datas['food'] = $this->game->getFood();
       //sending
       $dataStr = json_encode([ 'action' => 'move' , 'data' => $datas ]);
       foreach ($clientsSendTo as $client)

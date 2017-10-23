@@ -1,14 +1,24 @@
-<style type="text/css">
-  body
-{
-  text-align:center;
-  font-family: helvetica;
-}
-canvas 
-{
-  border: 2px solid rgb(151, 149, 149);
-}
-</style>
-<h3>Snake</h3>
-<canvas id="stage" height="600" width="800"></canvas>
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	body
+	{
+	  text-align:center;
+	  font-family: helvetica;
+	  background-color: aliceblue;
+	}
+	canvas 
+	{
+	  border: 2px solid rgb(151, 149, 149);
+	}
+	</style>
+	<title>Snake Game</title>
+</head>
+<body>
+	<h3>Snake Game</h3>
+	<div><button onclick="newGame()">New Game</button></div>
+	<canvas id="stage" height="600" width="800"></canvas>
+</body>
+</html>
 <script type="text/javascript" src="snake.js"></script>

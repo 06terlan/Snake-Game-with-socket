@@ -74,16 +74,27 @@ Game.Draw = function(context,canvas) {
   this.drawStage = function(data) {
     
     // Draw White Stage
-		context.fillStyle = "white"; console.log(this.Com,this.Com.width,this.Com.height);
+		context.fillStyle = "white";console.log(data);
 		context.fillRect(0, 0, this.Com.width, this.Com.height);
     
     for(var n in data)
     {
-      if(data[n]['isPlaying'] == true)
+      if(n == 'food')
+      {
+        this.drawCell(data[n]['x'],data[n]['y'], 'rgb(45, 185, 57)' );
+      }
+      else if(data[n]['isPlaying'] == true)
       {
         for(var nn in data[n]['length'])
         {
-          this.drawCell(data[n]['length'][nn]['x'],data[n]['length'][nn]['y'], (n==window.myId?'rgb(220, 73, 73)':'rgb(170, 170, 170)') );
+          if(n==window.myId)
+          {
+            // Draw Cell
+            this.drawCell(data[n]['length'][nn]['x'],data[n]['length'][nn]['y'], 'rgb(220, 73, 73)' );
+            // Draw Score
+            context.fillText('Your score: ' + data[n]['score'], 10, (this.Com.height - 5));
+          }
+          else this.drawCell(data[n]['length'][nn]['x'],data[n]['length'][nn]['y'], 'rgb(170, 170, 170)' );
         }
       }
       else if( n == window.myId )
@@ -91,38 +102,6 @@ Game.Draw = function(context,canvas) {
         alert('Game over');
       }
     }
-
-    // Check Collision
-    /*if (this.collision(nx, ny) == true)
-    {
-      snake.restart();
-      return;
-    }*/
-    
-    // Logic of Snake food
-    /*if (nx == snake.stage.food.x && ny == snake.stage.food.y) {
-      var tail = {x: nx, y: ny};
-      snake.stage.score++;
-      snake.initFood();
-    } else {
-      var tail = snake.stage.length.pop();
-      tail.x   = nx;
-      tail.y   = ny;	
-    }
-    snake.stage.length.unshift(tail);*/
-    
-    // Draw Snake
-    /*for (var i = 0; i < snake.stage.length.length; i++)
-    {
-      var cell = snake.stage.length[i];
-      this.drawCell(cell.x, cell.y);
-    }*/
-    
-    // Draw Food
-    //this.drawCell(snake.stage.food.x, snake.stage.food.y);
-    
-    // Draw Score
-    //context.fillText('Score: ' + snake.stage.score, 5, (snake.stage.height - 5));
   };
 
   // Draw Cell
@@ -148,13 +127,18 @@ Game.Snake = function(elementId, conf)
   this.events   = new Keyboard.ControllerEvents();
 };
 
+function newGame()
+{
+  Sockets.WS.send( JSON.stringify( { action : 'newGame' } ) );
+}
+
 Sockets.Creator = function(url)
 {
   Sockets.WS = new WebSocket(url);
   Sockets.WS.onopen = function(msg)
   {
-    alert('Are you ready?');
-    Sockets.WS.send( JSON.stringify( { action : 'newGame' } ) );
+    alert('Are you ready?'); 
+    newGame();
   };
   Sockets.WS.onmessage = function(msg)
   {

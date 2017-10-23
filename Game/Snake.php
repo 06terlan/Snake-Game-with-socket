@@ -11,6 +11,7 @@ class Snake
 	private $length;
 	private $size;
 	private $id;
+	private $score;
 
 	function __construct( $size , $id )
 	{
@@ -39,6 +40,10 @@ class Snake
 
 	public function setLength( $length ){ $this->length = $length; }
 
+	public function getScore(){ return $this->score; }
+
+	public function increaseScore(){ $this->score++ ; }
+
 	public function getId() { return $this->id; }
 
 	public function initSnake()
@@ -51,9 +56,10 @@ class Snake
 
 	public function newGame()
 	{
-		$this->isPlaying = true;
-		$this->pressedKey = 'right';
-		$this->length = [];
+		$this->isPlaying 	= true;
+		$this->score     	= 0;
+		$this->pressedKey 	= 'right';
+		$this->length 		= [];
 		$this->initSnake();
 	}
 }

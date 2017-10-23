@@ -20,6 +20,7 @@ class Game extends \Thread
 
 	private $foodX;
 	private $foodY;
+	private $foodEaten;
 	
 	function __construct( $fps = 300 , $snakeSize = 5 , $height = 400 , $width = 520 , $cw = 10 , $address = '127.0.0.1' , $port = 5555 )
 	{
@@ -32,6 +33,9 @@ class Game extends \Thread
 
 		$this->address = $address;
 		$this->port = $port;
+
+		$this->Newfood();
+		$this->foodEaten = false;
 	}
 
 	public function run()
@@ -111,13 +115,18 @@ class Game extends \Thread
 	    	$snake->isPlaying = false;
 	    	return [ 'isPlaying' => false ];
 	    }
-
-	    array_pop($length);
+	    else if( $this->foodX == $nx && $this->foodY == $ny )
+	    {
+	    	$snake->increaseScore();
+	    	$this->foodEaten = true;
+	    }
+	    else array_pop($length);
+	    
 	    array_unshift($length, [ 'x' => $nx , 'y' => $ny ]);
 
 	    $snake->setLength($length);
 
-	    return [ 'length' => $length , 'isPlaying' => true ];
+	    return [ 'length' => $length , 'score' => $snake->getScore() , 'isPlaying' => true ];
 	}
 
 	public function collision($nx, $ny)
@@ -127,5 +136,22 @@ class Game extends \Thread
 	      return true;
 	    }
 	    return false;    
+	}
+
+	public function Newfood()
+	{
+		$this->foodEaten = false;
+		
+		$this->foodX = rand( 0 , ($this->width / $this->cw) );
+		$this->foodY = rand( 0 , ($this->height / $this->cw) );
+	}
+
+	public function getFood()
+	{
+		if( $this->foodEaten )
+		{
+			$this->Newfood();
+		}
+		return [ 'x' => $this->foodX , 'y' => $this->foodY ];
 	}
 }
