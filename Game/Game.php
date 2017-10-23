@@ -74,7 +74,7 @@ class Game extends \Thread
 		{
 		    echo "Game socket_create OK.\n";
 		}
-		$result = socket_connect($socket, '127.0.0.1' , 5555 );
+		$result = socket_connect($socket, $this->address , $this->port );
 		if ($result === false)
 		{
 		    echo "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
@@ -142,8 +142,8 @@ class Game extends \Thread
 	{
 		$this->foodEaten = false;
 		
-		$this->foodX = rand( 0 , ($this->width / $this->cw) );
-		$this->foodY = rand( 0 , ($this->height / $this->cw) );
+		$this->foodX = rand( 0 , ($this->width / $this->cw - 1) );
+		$this->foodY = rand( 0 , ($this->height / $this->cw - 1) );
 	}
 
 	public function getFood()

@@ -14,15 +14,15 @@ require_once __DIR__ . '/Socket/autoloader.php'; // Autoload files using Compose
 
 set_time_limit(0);
 
-// variables
-$address = '127.0.0.1';
+//server
+$address = '192.168.137.1';
 $port = 5555;
 $verboseMode = true;
 
 //game
 $fps = 200;
 $snakeSize = 5;
-$height = 600;
+$height = 500;
 $width = 800;
 $cw = 10;
 

@@ -4,7 +4,7 @@
 	<style type="text/css">
 	body
 	{
-	  text-align:center;
+	  /*text-align:center;*/
 	  font-family: helvetica;
 	  background-color: aliceblue;
 	}
@@ -16,9 +16,19 @@
 	<title>Snake Game</title>
 </head>
 <body>
-	<h3>Snake Game</h3>
-	<div><button onclick="newGame()">New Game</button></div>
-	<canvas id="stage" height="600" width="800"></canvas>
+	<div style="width: 100%;text-align: center;"><h3>Snake Game</h3></div>
+	<div style="width: 100%;">
+		<div style="float: left;"><canvas id="stage" height="500" width="800"></canvas></div>
+		<div style="float: left;">
+			<button onclick="newGame()">New Game</button><br/><br/><br/>
+			<div><button onclick="document.onkeydown({which:38})" style="width: 100%;">Up</button></div>
+			<div>
+				<button onclick="document.onkeydown({which:37})">Left</button>
+				<button onclick="document.onkeydown({which:39})">Right</button>
+			</div>
+			<button onclick="document.onkeydown({which:40})" style="width: 100%;">Down</button>
+		</div>
+	</div>
 </body>
 </html>
 <script type="text/javascript" src="snake.js"></script>
