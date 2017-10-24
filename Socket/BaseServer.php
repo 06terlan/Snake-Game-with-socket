@@ -165,6 +165,7 @@ abstract class BaseServer
 	 */
 	private function action($client, $data)
 	{
+		$this->consoleWrite("Performing data un: ".$data);
 		$data = $this->unmask($data);
 		$this->consoleWrite("Performing data: ".$data);
 		$this->process($client,$data);

@@ -48,6 +48,7 @@ class Snake
 
 	public function initSnake()
 	{
+		$this->length 		= [];
 		for($i = $this->size - 1; $i >= 0 ; $i-- )
 		{
 			$this->length[] = [ 'x' => $i , 'y' => 0 ];
@@ -59,7 +60,6 @@ class Snake
 		$this->isPlaying 	= true;
 		$this->score     	= 0;
 		$this->pressedKey 	= 'right';
-		$this->length 		= [];
 		$this->initSnake();
 	}
 }
