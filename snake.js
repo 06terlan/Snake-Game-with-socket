@@ -15,7 +15,7 @@ Keyboard.Keymap = {
   39: 'right',
   40: 'down'
 };
-Sockets.Url = "ws://192.168.137.1:5555";
+Sockets.Url = "ws://127.0.0.1:5555";
 Sockets.WS = null;
 
 /**
@@ -74,7 +74,7 @@ Game.Draw = function(context,canvas) {
   this.drawStage = function(data) {
     
     // Draw White Stage
-		context.fillStyle = "white";
+		context.fillStyle = "white";console.log(data);
 		context.fillRect(0, 0, this.Com.width, this.Com.height);
     
     for(var n in data)

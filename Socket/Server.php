@@ -23,7 +23,6 @@ class Server extends BaseServer
     $this->consoleWrite($message);
     $action = json_decode( $message , true );
 
-    //$this->game->action( $client, $action , $this->clients );
     if( $action['action'] == 'pressKey' ) $client->snake->setPressedKey( $action['key'] );
     else if( $action['action'] == 'newGame' ) $client->snake->newGame();
     else if( $action['action'] == 'nextMove' )

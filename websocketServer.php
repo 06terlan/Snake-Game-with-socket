@@ -22,7 +22,7 @@ $verboseMode = true;
 //game
 $fps = 200;
 $snakeSize = 5;
-$height = 600;
+$height = 500;
 $width = 800;
 $cw = 10;
 
